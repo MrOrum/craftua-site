@@ -1,0 +1,289 @@
+/* ================== БАЗА ================== */
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #0f0f0f;
+    color: #e6e6e6;
+    line-height: 1.5;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+a {
+    transition: 0.2s ease;
+}
+
+/* ================== ХЕДЕР ================== */
+
+.header {
+    width: 100%;
+    background: #1a1a1a;
+    padding: 15px 25px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 2px solid #2b2b2b;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.logo {
+    font-size: 28px;
+    font-weight: bold;
+    color: #4caf50;
+    text-decoration: none;
+}
+
+.logo:hover {
+    opacity: 0.8;
+}
+
+/* Правий блок хедера */
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+/* Кнопка лаунчера */
+.header-launcher {
+    background: #ff9800;
+    padding: 10px 18px;
+    border-radius: 6px;
+    color: white;
+    font-weight: bold;
+    text-decoration: none;
+    transition: 0.2s ease;
+}
+
+.header-launcher:hover {
+    background: #e68900;
+}
+
+/* Панель логіну */
+.login-panel {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.login-panel input {
+    padding: 8px 10px;
+    background: #141414;
+    border: 1px solid #333;
+    border-radius: 5px;
+    color: white;
+    width: 150px;
+    transition: 0.2s ease;
+}
+
+.login-panel input:focus {
+    outline: none;
+    border-color: #4caf50;
+}
+
+/* ================== КНОПКИ ================== */
+
+.login-btn,
+.register-btn,
+.logout-btn,
+.profile-btn {
+    padding: 10px 16px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+    display: inline-block;
+    transition: 0.2s ease;
+}
+
+.login-btn {
+    background: #4caf50;
+}
+
+.login-btn:hover {
+    background: #45a049;
+}
+
+.register-btn {
+    background: #2196f3;
+}
+
+.register-btn:hover {
+    background: #1e88e5;
+}
+
+.logout-btn,
+.logout-red {
+    background: #d9534f;
+}
+
+.logout-btn:hover,
+.logout-red:hover {
+    background: #c9302c;
+}
+
+/* ================== НОВИНИ ================== */
+
+main {
+    max-width: 900px;
+    margin: 30px auto;
+    padding: 0 20px;
+}
+
+.news-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.news-item {
+    background: #1a1a1a;
+    padding: 20px;
+    border-radius: 10px;
+    border-left: 4px solid #4caf50;
+    box-shadow: 0 0 15px rgba(0,0,0,0.4);
+    transition: 0.2s ease;
+}
+
+.news-item:hover {
+    transform: translateX(4px);
+}
+
+/* ================== ФОРМИ ================== */
+
+.auth-container {
+    max-width: 420px;
+    margin: 40px auto;
+    background: #1a1a1a;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 0 18px rgba(0,0,0,0.5);
+}
+
+.auth-container input {
+    width: 100%;
+    padding: 10px;
+    background: #141414;
+    border: 1px solid #333;
+    border-radius: 6px;
+    color: white;
+    margin-top: 5px;
+    transition: 0.2s ease;
+}
+
+.auth-container input:focus {
+    outline: none;
+    border-color: #4caf50;
+}
+
+.auth-container button,
+.auth-container a.login-btn,
+.auth-container a.register-btn {
+    width: 100%;
+    margin-top: 12px;
+    padding: 10px;
+    border-radius: 6px;
+    text-align: center;
+    display: block;
+}
+
+/* ================== ПРОФІЛЬ ================== */
+
+.profile-container {
+    max-width: 500px;
+    margin: 40px auto;
+    background: #1a1a1a;
+    padding: 30px;
+    border-radius: 12px;
+    border: 1px solid #333;
+    box-shadow: 0 0 20px rgba(0,0,0,0.5);
+}
+
+.profile-avatar {
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+    display: block;
+    margin: 0 auto 20px auto;
+    border: 3px solid #4caf50;
+}
+
+.profile-username {
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.profile-status {
+    text-align: center;
+    color: #bfbfbf;
+    margin-bottom: 20px;
+}
+
+.profile-btn {
+    width: 100%;
+    padding: 12px;
+    margin-top: 12px;
+    background: #4caf50;
+    color: white;
+    text-align: center;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.profile-btn:hover {
+    background: #45a049;
+}
+
+/* ================== АДАПТИВНІСТЬ ================== */
+
+@media (max-width: 720px) {
+
+    .header {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+    }
+
+    .header-right {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .login-panel {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .login-panel input {
+        width: 100%;
+    }
+
+    .news-item:hover {
+        transform: none;
+    }
+}
+
+@media (max-width: 480px) {
+
+    .logo {
+        font-size: 24px;
+    }
+
+    .profile-container {
+        padding: 20px;
+    }
+
+    .profile-username {
+        font-size: 20px;
+    }
+}

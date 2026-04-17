@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>CraftUA — Вхід</title>
+
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+
+    <link rel="stylesheet" href="https://craftua.free.nf/style.css?v=3.0.0">
+</head>
+
+<body>
+
+<header class="header">
+    <a href="index.html" class="logo">CraftUA</a>
+
+    <div class="header-right">
+        <a href="https://github.com/MrOrum/CraftUA-Launcher/releases/download/1.0.3/CraftUA-Installer.exe" class="header-launcher">
+            Лаунчер
+        </a>
+
+        <div class="login-panel" id="login-panel">
+            <input type="text" id="header-username" placeholder="Нікнейм">
+            <input type="password" id="header-password" placeholder="Пароль">
+            <button class="login-btn" id="header-login-btn">Увійти</button>
+            <a href="register.html" class="register-btn">Реєстрація</a>
+        </div>
+    </div>
+</header>
+
+<main class="auth-container">
+    <h1>Вхід до акаунта</h1>
+
+    <form id="login-form">
+        <label>
+            Логін
+            <input type="text" id="username" required>
+        </label>
+
+        <label>
+            Пароль
+            <input type="password" id="password" required>
+        </label>
+
+        <button type="submit" class="login-btn">Увійти</button>
+
+        <p id="status" class="status"></p>
+    </form>
+</main>
+
+<script>
+/* ---------------- API ---------------- */
+const API = "https://craftua-auth-api.onrender.com/auth";
+
+/* ---------------- Універсальний fetch з авто-очікуванням Render ---------------- */
+async function apiRequest(url, options = {}, retries = 3) {
+    try {
+        const res = await fetch(url, options);
+
+        const text = await res.text();
+        let data;
+
+        try {
+            data = JSON.parse(text);
+        } catch {
+            throw new Error("NOT_JSON");
+        }
+
+        return { ok: res.ok, data };
+    } catch (err) {
+        if (retries > 0) {
+            await new Promise(r => setTimeout(r, 1200));
+            return apiRequest(url, options, retries - 1);
+        }
+        throw err;
+    }
+}
+
+/* ---------------- Вхід через форму ---------------- */
+document.getElementById('login-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    await loginUser(
+        document.getElementById('username').value.trim(),
+        document.getElementById('password').value
+    );
+});
+
+/* ---------------- Вхід через header ---------------- */
+document.getElementById('header-login-btn').addEventListener('click', async () => {
+    await loginUser(
+        document.getElementById('header-username').value.trim(),
+        document.getElementById('header-password').value
+    );
+});
+
+/* ---------------- Функція входу ---------------- */
+async function loginUser(username, password) {
+    const statusEl = document.getElementById('status');
+
+    if (!username || !password) {
+        statusEl.textContent = "Заповніть всі поля";
+        statusEl.style.color = "red";
+        return;
+    }
+
+    statusEl.textContent = "Вхід...";
+    statusEl.style.color = "orange";
+
+    try {
+        const { ok, data } = await apiRequest(`${API}/login`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username, password })
+        });
+
+        if (ok && data.success) {
+
+            localStorage.setItem("token", data.token);
+            localStorage.setItem("username", username);
+
+            document.querySelector(".auth-container").innerHTML = `
+                <h1>Акаунт авторизований</h1>
+                <div class="auth-success-box">
+                    <p><strong>Вітаємо, ${username}!</strong></p>
+                    <p>Ви успішно увійшли.</p>
+                    <a href="profile.html" class="login-btn">Особистий кабінет</a>
+                </div>
+            `;
+
+        } else {
+            statusEl.textContent = data.message || "Невірний логін або пароль";
+            statusEl.style.color = "red";
+        }
+
+    } catch {
+        statusEl.textContent = "Сервер запускається... Спробуйте ще раз";
+        statusEl.style.color = "red";
+    }
+}
+
+/* ---------------- Перевірка токена ---------------- */
+async function verifyToken() {
+    const token = localStorage.getItem("token");
+    if (!token) return false;
+
+    try {
+        const { ok, data } = await apiRequest(`${API}/verify`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ token })
+        });
+
+        return ok && data.success;
+
+    } catch {
+        return false;
+    }
+}
+
+/* ---------------- Автоматичний логін ---------------- */
+async function checkSession() {
+    const username = localStorage.getItem("username");
+    const token = localStorage.getItem("token");
+
+    if (!username || !token) return;
+
+    const valid = await verifyToken();
+    if (!valid) {
+        logout();
+        return;
+    }
+
+    const panel = document.getElementById("login-panel");
+    panel.innerHTML = `
+        <span class="welcome">Вітаємо, ${username}</span>
+        <a href="profile.html" class="login-btn">Профіль</a>
+        <button class="logout-btn" onclick="logout()">Вийти</button>
+    `;
+
+    document.querySelector(".auth-container").innerHTML = `
+        <h1>Ви вже авторизовані</h1>
+        <div class="auth-success-box">
+            <p><strong>${username}</strong></p>
+            <p>Ваш акаунт активний.</p>
+            <a href="profile.html" class="login-btn">Особистий кабінет</a>
+        </div>
+    `;
+}
+
+/* ---------------- Вихід ---------------- */
+function logout() {
+    localStorage.removeItem("token");
+    localStorage.removeItem("username");
+    window.location.href = "login.html?v=" + Date.now();
+}
+
+checkSession();
+</script>
+
+</body>
+</html>
